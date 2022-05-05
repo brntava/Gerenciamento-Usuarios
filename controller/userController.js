@@ -22,6 +22,8 @@ class UserController {
 
             let values = this.getValues();
 
+            if(!values) return false;
+
             // Retorno da promise
 
             this.getPhoto().then(
@@ -99,10 +101,20 @@ class UserController {
     getValues() {
 
         let user = {};
+        let isValid = true;
 
         // ... quando não sabe quantos itens vao ter no array
 
         [...this.formEl.elements].forEach( (item, index) => {
+
+            // Verifica se o itens estão vazios
+
+            if(['name','email','password'].indexOf(item.name) > -1 && !item.value){
+
+                item.parentElement.classList.add('has-error');
+                isValid = false;
+
+            }
 
             if(item.name == 'gender'){
         
@@ -119,6 +131,10 @@ class UserController {
                 user[item.name] = item.value
             }
         });
+
+        if(!isValid){
+            return false;
+        };
     
         return new User(
             user.name,
@@ -136,6 +152,8 @@ class UserController {
     addLine(dataUser){
 
         let tr = document.createElement('tr');
+        
+        tr.dataset.user = JSON.stringify(dataUser);
 
         tr.innerHTML = `
             <td> <img src="${dataUser.photo}" alt="User Image" class="img-circle img-sm"></td>
@@ -150,7 +168,30 @@ class UserController {
         `;
     
         this.tableEl.appendChild(tr);
+
+        this.updateCount()
     
+    }
+
+    updateCount(){
+
+        let numberUsers = 0;
+        let numberAdmin = 0;
+
+        [...this.tableEl.children].forEach((tr) =>{
+
+            numberUsers++;
+
+            let user = JSON.parse(tr.dataset.user);
+
+            // Se o admin for true add mais um
+            if(user._admin) numberAdmin++;
+
+        });
+
+        document.getElementById('users-number').innerHTML = numberUsers;
+        document.getElementById('users-numbers-admin').innerHTML = numberAdmin;
+
     }
 
 }
