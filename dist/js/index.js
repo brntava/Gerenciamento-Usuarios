@@ -1,4 +1,3 @@
-let fields = document.querySelectorAll('#form-user-create [name]');
-let user = {};
+let userController = new UserController('form-user-create', 'table-users');
 
 
