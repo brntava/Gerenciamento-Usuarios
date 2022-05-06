@@ -66,7 +66,6 @@ class User {
 
                 default:
                     this[name] = json[name];
-                    break
             }
 
         }

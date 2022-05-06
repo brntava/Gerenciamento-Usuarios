@@ -7,6 +7,7 @@ class UserController {
         this.tableEl = document.getElementById(tableEl);
         this.onSubmit();
         this.onEdit();
+        this.selectAll();
 
     }
 
@@ -56,21 +57,14 @@ class UserController {
                         result._photo = content
                     }
 
-                    tr.dataset.user = JSON.stringify(values);
+                    let user = new User();
 
-                    tr.innerHTML = `
-                    <td> <img src="${result._photo}" alt="User Image" class="img-circle img-sm"></td>
-                    <td>${result._name}</td>
-                    <td>${result._email}</td>
-                    <td>${(result._admin) ? 'Sim' : 'Não'}</td>
-                    <td>${Utils.dateFormat(result._register)}</td>
-                    <td>
-                    <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
-                    <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
-                    </td>
-                `;
-        
-                    this.addEventsTr(tr);
+                    user.loadFromJSON(result);
+
+                    this.getTr(user, tr)
+
+                    this.insert(values);
+
                     this.updateCount();
     
                     this.formUpdateEl.reset();
@@ -110,8 +104,6 @@ class UserController {
             (content) => {
 
                 values.photo = content;
-
-                this.insert(values);
 
                 this.addLine(values);
 
@@ -238,9 +230,9 @@ class UserController {
 
         let users = [];
 
-        if(sessionStorage.getItem('users')){
+        if(localStorage.getItem('users')){
 
-            users = JSON.parse(sessionStorage.getItem('users'));
+            users = JSON.parse(localStorage.getItem('users'));
 
         }
 
@@ -256,7 +248,7 @@ class UserController {
 
             let user = new User();
 
-            user.loadfromJSON(dataUser);
+            user.loadFromJSON(item);
 
             this.addLine(item);
 
@@ -271,16 +263,18 @@ class UserController {
         users.push(data);
 
         // Vai guardar um array de objetos JSON
-        sessionStorage.setItem('users', JSON.stringify(users))
+        // sessionStorage.setItem('users', JSON.stringify(users))
+
+        localStorage.setItem('users', JSON.stringify(users));
 
     }
 
     // Adiciona as informações
 
-    addLine(dataUser){
+    getTr(dataUser, tr = null){
 
-        let tr = document.createElement('tr');
-        
+        if(tr === null) tr = document.createElement('tr');
+
         tr.dataset.user = JSON.stringify(dataUser);
 
         tr.innerHTML = `
@@ -295,7 +289,15 @@ class UserController {
             </td>
         `;
 
-        this.addEventsTr(tr)
+        this.addEventsTr(tr);
+
+        return tr
+
+    }
+
+    addLine(dataUser){
+
+        let tr = this.getTr(dataUser);
     
         this.tableEl.appendChild(tr);
 
