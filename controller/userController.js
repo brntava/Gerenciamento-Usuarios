@@ -61,9 +61,9 @@ class UserController {
 
                     user.loadFromJSON(result);
 
-                    this.getTr(user, tr)
+                    user.save();
 
-                    this.insert(values);
+                    this.getTr(user, tr)
 
                     this.updateCount();
     
@@ -104,6 +104,8 @@ class UserController {
             (content) => {
 
                 values.photo = content;
+
+                values.save();
 
                 this.addLine(values);
 
@@ -224,7 +226,7 @@ class UserController {
 
     }
 
-    // SessionStorage
+    // LocalStorage
 
     getUsersStorage(){
 
@@ -254,19 +256,6 @@ class UserController {
 
         })
         
-    }
-
-    insert(data){
-
-        let users = this.getUsersStorage();
-        
-        users.push(data);
-
-        // Vai guardar um array de objetos JSON
-        // sessionStorage.setItem('users', JSON.stringify(users))
-
-        localStorage.setItem('users', JSON.stringify(users));
-
     }
 
     // Adiciona as informações
@@ -314,7 +303,7 @@ class UserController {
                 if(confirm("Deseja realmente excluir?")){
 
                     tr.remove();
-                    this.updateCount()
+                    this.updateCount();
                 };
 
         });
