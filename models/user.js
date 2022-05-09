@@ -79,9 +79,17 @@ class User {
 
     getNewID(){
 
-        if(!window.id) window.id = 0;
+        // Guarda o ultimo id
 
-        return id++;
+        let usersID = parseInt(localStorage.getItem('usersId'));
+
+        if(!usersID > 0) usersID = 0;
+
+        usersID++;
+
+        localStorage.setItem('usersId', usersID);
+
+        return usersID;
     }
 
     // Salvar o usuario no localstorage
@@ -94,7 +102,7 @@ class User {
 
             users = JSON.parse(localStorage.getItem('users'));
 
-        }
+        };
 
         return users
 
@@ -111,9 +119,11 @@ class User {
 
             users.map( u =>{
 
-                if(u.id == this._id){
+                if(u._id == this.id){
 
-                    Object.assign(u, this);
+                    //Object.assign(u, this);
+
+                    u = this;
                 }
 
                 return u;
@@ -129,6 +139,24 @@ class User {
         }
 
         localStorage.setItem('users', JSON.stringify(users));
-    };
+    }
+
+    remove(){
+
+        let users = User.getUsersStorage();
+
+        users.forEach((userData, index) =>{
+
+            if(this._id == userData._id){
+
+                // Remove item do array
+                users.splice(index, 1);
+            }
+
+        });
+
+        localStorage.setItem('users', JSON.stringify(users));
+        
+    }
 
 }
