@@ -93,12 +93,8 @@ class UserController {
 
             let btn = this.formEl.querySelector('[type=submit]');
 
-            btn.disabled = true;
-
             let values = this.getValues(this.formEl);
-
-            if(!values) return false;
-
+            
             // Retorno da promise
 
             this.getPhoto(this.formEl).then(
@@ -111,14 +107,11 @@ class UserController {
                 this.addLine(values);
 
                 this.formEl.reset();
-
-                btn.disabled = false;
                 
             },
             (e) =>{
                 console.error(e);
             })
-
         })
     }
 
@@ -191,7 +184,6 @@ class UserController {
 
                 item.parentElement.classList.add('has-error');
                 isValid = false;
-
             }
 
             if(item.name == 'gender'){
